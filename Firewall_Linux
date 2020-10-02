@@ -1,0 +1,351 @@
+#!bin/bash
+x="sec"
+menu ()
+{
+while true $x !="sec"
+do
+clear
+echo "=================================================================="
+echo "                    Mini Security Script                      "
+echo "                        By H4tGh0sT                           "
+echo ""
+echo " Total Security encompasses much more than just one configuration."
+echo ""
+echo "   this tool will only increase a small percentage of security"
+echo "                 on your system and browsing.                 "
+echo ""
+echo "            Be careful what you will do with its use.         "
+echo ""
+echo "                Full responsibility of the user               "
+echo ""
+echo "=================================================================="
+echo ""
+echo "                  1) Limpar tabela iptables                   "
+echo ""
+echo "                  2) Bloquear Pings                           "
+echo ""
+echo "                  3) Bloquear DDoS                            "
+echo ""
+echo "                  4) Pré Configrar regras iptables            "
+echo ""
+echo "                  5) Alterar MAC                              "
+echo ""
+echo "                  6) Iniciar TOR                              "
+echo ""
+echo "                  7) Iniciar TOR+ProxyChains (Firefox)        "
+echo ""
+echo "                  8) Iniciar TOR+Privoxy                      "
+echo ""
+echo "                  9) Iptables+MAC+TOR+ProxyChains (Firefox)     "
+echo ""
+echo "                 10) Iptables+MAC+TOR+Privoxy                   "
+echo ""
+echo "                 11) Para Sair                                 "
+echo ""
+echo "                 12) PARAR SERVIÇOS "
+echo ""
+echo "                 13  Limpar Sistema"
+echo ""
+echo "================================================================"
+echo "           Digite a opção desejada:"
+read x
+echo "Opção informada ($x)"
+echo "================================================================"
+
+case "$x" in
+
+
+    1)
+       echo " Limpando Regras "
+       sudo iptables -F
+       sudo iptables -X
+       sudo iptables -Z
+       sudo iptables -t nat -F
+       sudo iptables -t mangle -F
+       sudo iptables -t nat -X
+       sudo iptables -t nat -Z
+       sudo iptables -F POSTROUTING -t nat
+       sudo iptables -F PREROUTING -t nat
+       sudo iptables -F OUTPUT -t nat
+       echo "Limpo com sucesso"
+       sleep 5
+echo "================================================================"
+;;
+    2)
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       echo "Bloqueio de pings configurados!"
+       sleep 5
+echo "================================================================"
+;;
+    3)
+       sudo echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+       echo " DDoS Bloqueado! "
+       sleep 5
+echo "================================================================"
+;;
+    4)
+       echo " Pré Configurando tabelas do iptables  "
+       sudo iptables -F
+       sudo iptables -X
+       sudo iptables -Z
+       sudo iptables -t nat -F
+       sudo iptables -t mangle -F
+       sudo iptables -t nat -X
+       sudo iptables -t nat -Z
+       sudo iptables -F POSTROUTING -t nat
+       sudo iptables -F PREROUTING -t nat
+       sudo iptables -F OUTPUT -t nat
+       echo "Tabelas limpas!"
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -P INPUT ACCEPT
+       sudo iptables -P FORWARD DROP
+       sudo iptables -P OUTPUT ACCEPT
+       sudo iptables -A INPUT -p tcp -m multiport --dport 80,443 -j ACCEPT
+       sudo iptables -A INPUT -p tcp --syn -j DROP
+       sudo iptables -A INPUT -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A FORWARD -p tcp --syn -j DROP
+       sudo iptables -A FORWARD -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A OUTPUT -p tcp -m multiport --dport 80,443 -j ACCEPT
+       sudo iptables -A OUTPUT -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A OUTPUT -p tcp --syn -j DROP
+       echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+       echo 1024 > /proc/sys/net/ipv4/neigh/default/gc_thresh1
+       echo 2048 > /proc/sys/net/ipv4/neigh/default/gc_thresh2
+       echo 4096 > /proc/sys/net/ipv4/neigh/default/gc_thresh3
+       echo 0 > /proc/sys/net/ipv4/conf/all/accept_source_route
+       echo 1 > /proc/sys/net/ipv4/tcp_syncookies
+       echo " Tabelas do iptables pré configuradas  "
+       echo ""
+       echo " Para checar as regras digite;         "
+       echo ""
+       echo "           sudo iptables -L            "
+       sleep 5
+echo "================================================================="
+;;
+    5)
+       echo " Alterando endereço's MAC              "
+       sudo ifconfig wlan0 down
+       sudo ifconfig eth0 down
+       sudo macchanger -A wlan0
+       sudo macchanger -A eth0
+       sudo ifconfig wlan0 up
+       sudo ifconfig eth0 up
+       echo " MAC Camuflado com sucesso!            "
+       sleep 5
+echo "================================================================"
+;;
+    6)
+       echo " Iniciando serviço TOR  "
+       sudo systemctl stop tor
+       sudo systemctl start tor
+       echo " Serviço TOR Iniciado com sucesso! "
+       sleep 5
+echo "================================================================"
+;;
+    7)
+       echo " Iniciando ProxyChains (Firefox)  "
+       echo " Pré Configurando tabelas do iptables  "
+       sudo iptables -F
+       sudo iptables -X
+       sudo iptables -Z
+       sudo iptables -t nat -F
+       sudo iptables -t mangle -F
+       sudo iptables -t nat -X
+       sudo iptables -t nat -Z
+       sudo iptables -F POSTROUTING -t nat
+       sudo iptables -F PREROUTING -t nat
+       sudo iptables -F OUTPUT -t nat
+       echo "Tabelas limpas!"
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A INPUT -p icmp --icmp-type 8 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 8 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 8 -j DROP
+       sudo iptables -P INPUT ACCEPT
+       sudo iptables -P FORWARD DROP
+       sudo iptables -P OUTPUT ACCEPT
+       sudo iptables -A INPUT -p tcp -m multiport --dport 80,443,9050 -j ACCEPT
+       sudo iptables -A INPUT -m state  -p icmp --state INVALID -j DROP
+       sudo iptables -A FORWARD -p tcp -m multiport --dport 80,443,9050 -j ACCEPT
+       sudo iptables -A FORWARD -p tcp --syn -j DROP
+       sudo iptables -A FORWARD  -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A OUTPUT -p tcp -m multiport --dport 80,443,9050 -j ACCEPT
+       sudo iptables -A OUTPUT -m state -p icmp --state INVALID -j DROP
+       echo " Tabelas do iptables pré configuradas  "
+       clear
+       sudo systemctl start tor
+       proxychains firefox
+echo "================================================================="
+;;
+    8)
+       echo " Iniciando TOR + Privoxy "
+       sudo systemctl start tor
+       sudo systemctl start privoxy
+       echo " Serviços Iniciados, para usa-lo;"
+       echo " Configure o proxy do sistema ou navegador;"
+       echo " Para o seguinte endereço: localhost:8118"
+       echo "            ou 127.0.0.1:8118"
+       echo " Aperte q para fechar o status de configuração"
+       sudo systemctl status privoxy
+       sleep 5
+echo "================================================================="
+;;
+    9)
+       echo " IPTABLES+MAC+TOR+PROXYCHAINS "
+       echo ""
+       echo "Configurando firewall"
+       sudo iptables -F
+       sudo iptables -X
+       sudo iptables -Z
+       sudo iptables -t nat -F
+       sudo iptables -t mangle -F
+       sudo iptables -t nat -X
+       sudo iptables -t nat -Z
+       sudo iptables -F POSTROUTING -t nat
+       sudo iptables -F PREROUTING -t nat
+       sudo iptables -F OUTPUT -t nat
+       echo " Regras limpas "
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       echo "Bloqueio de pings configurados!"
+       sudo iptables -A INPUT -p tcp -m multiport --dport 80,443,9050 -j ACCEPT
+       sudo iptables -A INPUT -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A FORWARD -p tcp -m multiport --dport 80,443,9050 -j ACCEPT
+       sudo iptables -A FORWARD -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A OUTPUT -p tcp -m multiport --dport 80,443,9050 -j ACCEPT
+       sudo iptables -A OUTPUT -m state -p icmp --state INVALID -j DROP
+       echo " Tabelas do iptables pré configuradas  "
+       echo ""
+       echo " Para checar as regras digite;         "
+       echo ""
+       echo "           sudo iptables -L            "
+       echo ""
+       echo " Alterando endereço's MAC              "
+       sudo ifconfig wlan0 down
+       sudo ifconfig eth0 down
+       sudo macchanger -A wlan0
+       sudo macchanger -A eth0
+       sudo ifconfig wlan0 up
+       sudo ifconfig eth0 up
+       echo " MAC Camuflado com sucesso!            "
+       echo ""
+       echo " Iniciando serviço TOR  "
+       sudo systemctl stop tor
+       sudo systemctl start tor
+       echo " Serviço TOR Iniciado com sucesso! "
+       echo ""
+       echo " Iniciando ProxyChains (Firefox)  "
+       clear
+       proxychains firefox
+echo "================================================================"
+;;
+   10)
+       echo " IPTABLES+MAC+TOR+PRIVOXY "
+       echo ""
+       echo " Alterando endereço's MAC              "
+       sudo ifconfig wlan0 down
+       sudo ifconfig eth0 down
+       sudo macchanger -A wlan0
+       sudo macchanger -A eth0
+       sudo ifconfig wlan0 up
+       sudo ifconfig eth0 up
+       echo "Configurando firewall"
+       sudo iptables -F
+       sudo iptables -X
+       sudo iptables -Z
+       sudo iptables -t nat -F
+       sudo iptables -t mangle -F
+       sudo iptables -t nat -X
+       sudo iptables -t nat -Z
+       sudo iptables -F POSTROUTING -t nat
+       sudo iptables -F PREROUTING -t nat
+       sudo iptables -F OUTPUT -t nat
+       echo " Regras limpas "
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A INPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A FORWARD -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       sudo iptables -A OUTPUT -p icmp --icmp-type 0 -j DROP
+       echo "Bloqueio de pings configurados!"
+       echo "Tabelas limpas!"
+       sudo iptables -A INPUT -p tcp -m multiport --dport 80,443,8118 -j ACCEPT
+       sudo iptables -A INPUT -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A FORWARD -p tcp -m multiport --dport 80,443,8118 -j ACCEPT
+       sudo iptables -A FORWARD -p tcp --syn -j DROP
+       sudo iptables -A FORWARD -m state -p icmp --state INVALID -j DROP
+       sudo iptables -A OUTPUT -p tcp -m multiport --dport 80,443,8118 -j ACCEPT
+       sudo iptables -A OUTPUT -m state -p icmp --state INVALID -j DROP
+       echo " Tabelas do iptables pré configuradas  "
+       echo ""
+       echo " Para checar as regras digite;         "
+       echo ""
+       echo "           sudo iptables -L            "
+       echo ""
+       echo ""
+       echo " Iniciando serviço TOR  "
+       sudo systemctl restart tor
+       echo " Serviço TOR Iniciado com sucesso! "
+       echo ""
+       sudo systemctl start privoxy
+       echo " Privoxy Iniciado, Para sair do status aperte q "
+       sudo systemctl status privoxy
+       sleep 5
+echo "================================================================"
+;;
+   11)
+       echo " Saindo...  "
+       sleep 5
+       clear;
+       exit;
+echo "================================================================"
+;;
+   12)
+       echo " Parando Serviços "
+       sudo systemctl stop tor
+       sudo systemctl stop privoxy
+       echo " Serviços parados com sucesso! "
+       sleep 5
+echo "================================================================"
+;;
+   13)
+       echo " Iniciando Limpeza.. "
+       echo " Removendo Programas e Bibliotecas não utilizadas "
+       sudo apt-get autoremove -y
+       echo " Concluido.. "
+       echo " Removendo pacotes Obsoletos"
+       sudo apt-get autoclean -y
+       echo " Concluido "
+       sleep 5
+echo "================================================================"
+;;
+   14)
+       echo " Teste"
+       gnome-terminal -e 'bash netstat -p 80'
+       echo "Foo....";
+       echo "....Bar";
+echo "================================================================"
+;;
+
+*)
+      echo " Opção inválida! "
+esac
+done
+
+}
+menu
